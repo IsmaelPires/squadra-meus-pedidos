@@ -1,0 +1,15 @@
+C:\Users\ismaa\Documents\Projetos\Core\bin\Debug\net8.0\Core.deps.json
+C:\Users\ismaa\Documents\Projetos\Core\bin\Debug\net8.0\Core.runtimeconfig.json
+C:\Users\ismaa\Documents\Projetos\Core\bin\Debug\net8.0\Core.dll
+C:\Users\ismaa\Documents\Projetos\Core\bin\Debug\net8.0\Core.pdb
+C:\Users\ismaa\Documents\Projetos\Core\obj\Debug\net8.0\Core.csproj.AssemblyReference.cache
+C:\Users\ismaa\Documents\Projetos\Core\obj\Debug\net8.0\Core.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\ismaa\Documents\Projetos\Core\obj\Debug\net8.0\Core.AssemblyInfoInputs.cache
+C:\Users\ismaa\Documents\Projetos\Core\obj\Debug\net8.0\Core.AssemblyInfo.cs
+C:\Users\ismaa\Documents\Projetos\Core\obj\Debug\net8.0\Core.csproj.CoreCompileInputs.cache
+C:\Users\ismaa\Documents\Projetos\Core\obj\Debug\net8.0\Core.dll
+C:\Users\ismaa\Documents\Projetos\Core\obj\Debug\net8.0\refint\Core.dll
+C:\Users\ismaa\Documents\Projetos\Core\obj\Debug\net8.0\Core.pdb
+C:\Users\ismaa\Documents\Projetos\Core\obj\Debug\net8.0\Core.genruntimeconfig.cache
+C:\Users\ismaa\Documents\Projetos\Core\obj\Debug\net8.0\ref\Core.dll
+C:\Users\ismaa\Documents\Projetos\Core\obj\Debug\net8.0\Core.sourcelink.json
