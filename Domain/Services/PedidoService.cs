@@ -5,6 +5,8 @@ using Domain.Entities;
 using Domain.Interfaces;
 using Data.Interfaces;
 using Data.Models;
+using Microsoft.Extensions.Logging;
+using Serilog;
 
 namespace Domain.Services
 {
@@ -13,21 +15,27 @@ namespace Domain.Services
         private readonly IRepository<PedidoDataModel, Pedido> _pedidoRepository;
         private readonly bool isReformaTributariaAtiva = true; // Feature flag para cálculo de imposto
         private readonly IMapper _mapper;
+        private readonly ILogger<PedidoService> _logger;
 
-        public PedidoService(IRepository<PedidoDataModel, Pedido> pedidoRepository, IMapper mapper)
+        public PedidoService(IRepository<PedidoDataModel, Pedido> pedidoRepository, IMapper mapper, ILogger<PedidoService> logger)
         {
             _pedidoRepository = pedidoRepository;
             _mapper = mapper;
+            _logger = logger;
         }
 
         public async Task<ReceberPedidoResponse> CriarPedidoAsync(PedidoRequestDto pedidoRequestDto)
         {
             try
             {
+                _logger.LogInformation("Iniciando criação do pedido {PedidoId}", pedidoRequestDto.PedidoId);
+
                 // Verificar se o pedido já existe para evitar duplicidade
                 var pedidoExistente = await _pedidoRepository.GetPedidoByIdWithItemsAsync(pedidoRequestDto.PedidoId);
                 if (pedidoExistente != null)
                 {
+                    _logger.LogWarning("Pedido duplicado detectado: {PedidoId}", pedidoRequestDto.PedidoId);
+
                     return new ReceberPedidoResponse
                     {
                         Mensagem = "Pedido duplicado: Já existe um pedido com o mesmo ID."
@@ -48,6 +56,7 @@ namespace Domain.Services
 
                 if (possuiItensDuplicados)
                 {
+                    _logger.LogWarning("Pedido duplicado: Já existe um pedido com os mesmos itens. {PedidoId}", pedidoRequestDto.PedidoId);
                     return new ReceberPedidoResponse
                     {
                         Mensagem = "Pedido duplicado: Já existe um pedido com os mesmos itens."
@@ -76,6 +85,7 @@ namespace Domain.Services
                 };
 
                 await _pedidoRepository.CriaPedidoAsync(novoPedido);
+                _logger.LogInformation("Pedido {PedidoId} criado com sucesso.", novoPedido.PedidoId);
 
                 var response = new ReceberPedidoResponse
                 {
@@ -87,35 +97,44 @@ namespace Domain.Services
             }
             catch (Exception ex)
             {
+                _logger.LogError(ex, "Erro ao criar pedido {PedidoId}", pedidoRequestDto.PedidoId);
                 throw new Exception("Erro inesperado ao criar o pedido.", ex);
             }
         }
 
         public async Task<ConsultarPedidoResponse> ConsultarPedidoAsync(int id)
         {
+            _logger.LogInformation("Iniciando consulta do pedido {PedidoId}", id);
+
             try
             {
                 var pedido = await _pedidoRepository.GetPedidoByIdWithItemsAsync(id);
 
                 if (pedido == null)
                 {
+                    _logger.LogWarning("Pedido {PedidoId} não encontrado.", id);
                     throw new KeyNotFoundException("Pedido não encontrado.");
                 }
 
+                _logger.LogInformation("Pedido {PedidoId} encontrado com sucesso.", id);
                 return _mapper.Map<ConsultarPedidoResponse>(pedido);
             }
             catch (KeyNotFoundException ex)
             {
-                throw new KeyNotFoundException(ex.Message);
+                _logger.LogError("Erro ao consultar pedido {PedidoId}: {Mensagem}", id, ex.Message);
+                throw;
             }
             catch (Exception ex)
             {
+                _logger.LogError(ex, "Erro inesperado ao consultar pedido {PedidoId}.", id);
                 throw new Exception("Erro inesperado ao consultar o pedido.", ex);
             }
         }
 
         public async Task<List<ConsultarPedidoResponse>> ListarPedidosPorStatusAsync(string status)
         {
+            _logger.LogInformation("Iniciando listagem de pedidos com status: {Status}", status);
+
             try
             {
                 var pedidos = await _pedidoRepository.GetTodosPedidosAsync();
@@ -137,10 +156,12 @@ namespace Domain.Services
                         }).ToList()
                     }).ToList();
 
+                _logger.LogInformation("{Quantidade} pedidos encontrados com status {Status}.", pedidosFiltrados.Count, status);
                 return pedidosFiltrados;
             }
             catch (Exception ex)
             {
+                _logger.LogError(ex, "Erro inesperado ao listar pedidos com status {Status}.", status);
                 throw new Exception("Erro inesperado ao listar os pedidos por status.", ex);
             }
         }

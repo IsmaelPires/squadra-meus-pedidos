@@ -7,6 +7,14 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <None Remove="Database\Scripts\CreateTables\CreateTableItensPedidos.sql" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Compile Include="Database\Scripts\CreateTables\CreateTableItensPedidos.sql" />
+  </ItemGroup>
+
+  <ItemGroup>
     <Folder Include="Context\" />
     <Folder Include="Interfaces\" />
     <Folder Include="Repositories\" />
