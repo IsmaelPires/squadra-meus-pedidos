@@ -7,6 +7,7 @@ using Shared.Dtos.Request;
 using Shared.Dtos.Response;
 using Testcontainers.MsSql;
 using Microsoft.Data.SqlClient;
+using Microsoft.Extensions.Logging;
 
 public class PedidoServiceIntegrationTests : IAsyncLifetime
 {
@@ -15,9 +16,13 @@ public class PedidoServiceIntegrationTests : IAsyncLifetime
     private readonly IMapper _mapper;
     private readonly MsSqlContainer _sqlServerContainer;
     private readonly string _connectionString;
+    private readonly ILogger<PedidoService> _logger;
 
     public PedidoServiceIntegrationTests()
     {
+        // Mock do ILogger<PedidoService>
+        _logger = new Logger<PedidoService>(new LoggerFactory());
+
         // Configuração do TestContainer para SQL Server
         _sqlServerContainer = new MsSqlBuilder()
             .WithPassword("TestPassword123") // Define a senha obrigatória
@@ -39,7 +44,7 @@ public class PedidoServiceIntegrationTests : IAsyncLifetime
         _pedidoRepository = Substitute.For<IRepository<PedidoDataModel, Pedido>>();
 
         // Criar o serviço
-        _pedidoService = new PedidoService(_pedidoRepository, _mapper);
+        _pedidoService = new PedidoService(_pedidoRepository, _mapper, _logger);
     }
 
     // Inicializa o container do SQL Server e configura o banco

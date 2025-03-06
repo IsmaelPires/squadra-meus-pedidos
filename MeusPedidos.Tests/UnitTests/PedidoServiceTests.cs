@@ -5,6 +5,7 @@ using Data.Interfaces;
 using Shared.Dtos.Request;
 using Shared.Dtos.Response;
 using Data.Models;
+using Microsoft.Extensions.Logging;
 
 public class PedidoServiceTests
 {
@@ -12,10 +13,14 @@ public class PedidoServiceTests
     private readonly IRepository<PedidoDataModel, Pedido> _pedidoRepository = Substitute.For<IRepository<PedidoDataModel, Pedido>>();
     private readonly IMapper _mapper = Substitute.For<IMapper>();
     private readonly Faker _faker = new();
+    private readonly ILogger<PedidoService> _logger;
 
     public PedidoServiceTests()
     {
-        _pedidoService = new PedidoService(_pedidoRepository, _mapper);
+        // Mock do ILogger<PedidoService>
+        _logger = new Logger<PedidoService>(new LoggerFactory());
+
+        _pedidoService = new PedidoService(_pedidoRepository, _mapper, _logger);
     }
 
     [Fact]
