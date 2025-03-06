@@ -15,7 +15,7 @@ Este README descreve como inicializar a API em .NET 8 e consumir os métodos de 
 
 1. **Clone o repositório**:
    ```bash
-   git clone <URL-do-repositório>
+   git clone https://github.com/IsmaelPires/squadra-meus-pedidos.git
    cd <diretório-do-repositório>
    ```
 
